@@ -165,6 +165,89 @@ export function deleteResponse(id: string): void {
   localStorage.setItem(RESPONSES_KEY, JSON.stringify(responses));
 }
 
+const DEMO_SEEDED_KEY = 'c21_demo_seeded';
+
+export function seedDemoResponsesOnce(): void {
+  if (typeof window === 'undefined') return;
+  if (localStorage.getItem(DEMO_SEEDED_KEY)) return;
+  const existing = getResponses();
+  if (existing.length > 0) {
+    localStorage.setItem(DEMO_SEEDED_KEY, '1');
+    return;
+  }
+  const demoQId = 'demo-property-q1';
+  const now = Date.now();
+  const day = 86400000;
+  const demos: QuestionnaireResponse[] = [
+    {
+      id: 'demo-resp-1',
+      questionnaireId: demoQId,
+      questionnaireTitle: 'Property Questionnaire',
+      respondentName: 'Sarah Johnson',
+      respondentEmail: 'sarah.johnson@gmail.com',
+      answers: {},
+      status: 'reviewed',
+      accessToken: generateToken(),
+      submittedAt: new Date(now - 2 * day).toISOString(),
+      createdAt: new Date(now - 3 * day).toISOString(),
+      updatedAt: new Date(now - 2 * day).toISOString(),
+    },
+    {
+      id: 'demo-resp-2',
+      questionnaireId: demoQId,
+      questionnaireTitle: 'Property Questionnaire',
+      respondentName: 'Michael Chen',
+      respondentEmail: 'mchen@outlook.com',
+      answers: {},
+      status: 'submitted',
+      accessToken: generateToken(),
+      submittedAt: new Date(now - 4 * day).toISOString(),
+      createdAt: new Date(now - 5 * day).toISOString(),
+      updatedAt: new Date(now - 4 * day).toISOString(),
+    },
+    {
+      id: 'demo-resp-3',
+      questionnaireId: demoQId,
+      questionnaireTitle: 'Property Questionnaire',
+      respondentName: 'Emma Williams',
+      respondentEmail: 'emma.w@icloud.com',
+      answers: {},
+      status: 'submitted',
+      accessToken: generateToken(),
+      submittedAt: new Date(now - 6 * day).toISOString(),
+      createdAt: new Date(now - 7 * day).toISOString(),
+      updatedAt: new Date(now - 6 * day).toISOString(),
+    },
+    {
+      id: 'demo-resp-4',
+      questionnaireId: demoQId,
+      questionnaireTitle: 'Property Questionnaire',
+      respondentName: 'David Thompson',
+      respondentEmail: 'd.thompson@gmail.com',
+      answers: {},
+      status: 'reviewed',
+      accessToken: generateToken(),
+      submittedAt: new Date(now - 9 * day).toISOString(),
+      createdAt: new Date(now - 10 * day).toISOString(),
+      updatedAt: new Date(now - 9 * day).toISOString(),
+    },
+    {
+      id: 'demo-resp-5',
+      questionnaireId: demoQId,
+      questionnaireTitle: 'Property Questionnaire',
+      respondentName: 'Jessica Brown',
+      respondentEmail: 'jessica.brown@hotmail.com',
+      answers: {},
+      status: 'in-progress',
+      accessToken: generateToken(),
+      createdAt: new Date(now - day).toISOString(),
+      updatedAt: new Date(now - day).toISOString(),
+    },
+  ];
+  localStorage.setItem(RESPONSES_KEY, JSON.stringify(demos));
+  localStorage.setItem(DEMO_SEEDED_KEY, '1');
+}
+
 // ---- Portal Links ----
 
 export function getPortalLinks(questionnaireId?: string): CustomerPortalLink[] {

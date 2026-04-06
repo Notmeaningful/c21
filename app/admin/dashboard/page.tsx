@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/lib/contexts/AdminAuthContext';
-import { getResponses, deleteResponse, getTemplates } from '@/lib/store/questionnaire-store';
+import { getResponses, deleteResponse, getTemplates, seedDemoResponsesOnce } from '@/lib/store/questionnaire-store';
 import { QuestionnaireResponse } from '@/lib/types/questionnaire';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
@@ -31,6 +31,7 @@ export default function AdminDashboard() {
   const loadResponses = () => {
     setIsLoading(true);
     try {
+      seedDemoResponsesOnce();
       let all = getResponses();
       if (filter !== 'all') {
         all = all.filter(r => r.status === filter);
