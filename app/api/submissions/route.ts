@@ -4,6 +4,8 @@ import { sendSubmissionEmail, sendAdminNotificationEmail } from '@/lib/email';
 import { generateSubmissionId, sanitizeInput } from '@/lib/utils';
 import { SubmissionData } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 // Verify reCAPTCHA
 async function verifyRecaptcha(token: string): Promise<boolean> {
   if (!process.env.RECAPTCHA_SECRET_KEY) return true;
