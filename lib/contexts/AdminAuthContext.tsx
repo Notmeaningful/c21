@@ -13,7 +13,6 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AUTH_TOKEN_KEY = 'c21_admin_token';
 const AUTH_USER_KEY = 'c21_admin_user';
 const AUTH_ROLE_KEY = 'c21_admin_role';
 
@@ -24,11 +23,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
     const user = localStorage.getItem(AUTH_USER_KEY);
     const role = localStorage.getItem(AUTH_ROLE_KEY);
 
-    if (token && user) {
+    if (user) {
       setIsAuthenticated(true);
       setAdminUsername(user);
       setAdminRole(role);
@@ -48,8 +46,8 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       throw new Error(data.error || 'Invalid credentials');
     }
 
-    const { token, username: user, role } = await response.json();
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    const { username: user, role } = await response.json();
+    // Store only username/role for UI state — the actual auth token is an httpOnly cookie only
     localStorage.setItem(AUTH_USER_KEY, user);
     localStorage.setItem(AUTH_ROLE_KEY, role);
     setIsAuthenticated(true);
@@ -58,7 +56,6 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
     localStorage.removeItem(AUTH_ROLE_KEY);
     setIsAuthenticated(false);

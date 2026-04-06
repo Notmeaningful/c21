@@ -1,9 +1,15 @@
 import bcrypt from 'bcryptjs';
 
-// Users stored in module-level variable (persists across requests in dev)
-// In production, use a database
+// Password is controlled exclusively by the ADMIN_PASSWORD environment variable.
+// Set it in .env.local (local) and in Netlify environment variables (production).
+if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_PASSWORD) {
+  throw new Error('[SECURITY] ADMIN_PASSWORD environment variable must be set in production.');
+}
+
+const adminHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'dev-local-only', 10);
+
 const users: Record<string, { password: string; role: string; createdAt: string; email?: string }> = {
-  ahmad: { password: bcrypt.hashSync('123', 10), role: 'admin', createdAt: new Date().toISOString(), email: 'maan@c21fairfield.com.au' },
+  ahmad: { password: adminHash, role: 'admin', createdAt: new Date().toISOString(), email: process.env.ADMIN_EMAIL },
 };
 
 export function getUsers() {

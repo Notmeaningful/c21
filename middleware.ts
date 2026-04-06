@@ -1,6 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+async function verifyAdminToken(token: string): Promise<boolean> {
+  const secret = process.env.AUTH_SECRET;
+  if (!secret || !token) return false;
+
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
+  const [payloadB64, sigB64] = parts;
+
+  try {
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw', enc.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false, ['verify']
+    );
+
+    const toBuffer = (b64url: string): ArrayBuffer => {
+      const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+      const str = atob(padded);
+      const arr = new Uint8Array(str.length);
+      for (let i = 0; i < str.length; i++) arr[i] = str.charCodeAt(i);
+      return arr.buffer as ArrayBuffer;
+    };
+
+    const isValid = await crypto.subtle.verify('HMAC', key, toBuffer(sigB64), enc.encode(payloadB64).buffer as ArrayBuffer);
+    if (!isValid) return false;
+
+    const b64 = payloadB64.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+    const payload = JSON.parse(atob(padded));
+    return typeof payload.exp === 'number' && Date.now() < payload.exp;
+  } catch {
+    return false;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public auth pages and APIs
@@ -19,14 +56,13 @@ export function middleware(request: NextRequest) {
 
   // Protect all /admin/* and admin API routes
   const token = request.cookies.get('c21_admin_token')?.value;
+  const isValid = token ? await verifyAdminToken(token) : false;
 
-  if (!token) {
-    // API routes return 401, pages redirect to login
+  if (!isValid) {
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const loginUrl = new URL('/admin/login', request.url);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
   return NextResponse.next();
