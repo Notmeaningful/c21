@@ -9,7 +9,10 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+    Surrogate-Control = "no-store"
 
 [[headers]]
   for = "/_next/static/*"
