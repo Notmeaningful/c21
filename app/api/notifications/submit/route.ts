@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = process.env.NOTIFY_FROM || 'C21 Vasco Group <noreply@c21fairfield.com.au>';
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const FROM = process.env.NOTIFY_FROM || 'C21 Vasco Group <noreply@c21fairfield.com.au>';
+
   try {
     const { responseId, respondentName, respondentEmail, questionnaireTitle } = await request.json();
 
