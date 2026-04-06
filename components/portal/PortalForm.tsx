@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { QuestionnaireTemplate, QuestionnaireSection, QuestionDefinition, QuestionnaireResponse } from '@/lib/types/questionnaire';
 import { saveResponse, getResponseByToken } from '@/lib/store/questionnaire-store';
+import { addAuditLog } from '@/lib/store/audit-store';
 
 interface PortalFormProps {
   template: QuestionnaireTemplate;
@@ -97,6 +98,15 @@ export default function PortalForm({ template, existingResponse, portalToken, re
       setResponseId(response.id);
       setSubmitted(true);
       localStorage.removeItem(STORAGE_KEY);
+
+      // Log to audit trail
+      addAuditLog(
+        response.respondentName || response.respondentEmail || 'Anonymous',
+        'create',
+        'response',
+        response.id,
+        `Submitted "${template.title}"`
+      );
 
       if (portalToken) {
         const { markPortalLinkUsed } = await import('@/lib/store/questionnaire-store');

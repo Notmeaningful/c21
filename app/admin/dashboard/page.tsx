@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/lib/contexts/AdminAuthContext';
-import { SubmissionData } from '@/lib/supabase';
+import { getResponses, deleteResponse, getTemplates } from '@/lib/store/questionnaire-store';
+import { QuestionnaireResponse } from '@/lib/types/questionnaire';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { isAuthenticated, adminUsername, logout, isLoading: authLoading } = useAdminAuth();
-  const [submissions, setSubmissions] = useState<SubmissionData[]>([]);
+  const [responses, setResponses] = useState<QuestionnaireResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,25 +24,22 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchSubmissions();
+      loadResponses();
     }
   }, [isAuthenticated, filter]);
 
-  const fetchSubmissions = async () => {
+  const loadResponses = () => {
     setIsLoading(true);
     try {
-      const query = new URLSearchParams();
+      let all = getResponses();
       if (filter !== 'all') {
-        query.append('status', filter);
+        all = all.filter(r => r.status === filter);
       }
-
-      const response = await fetch(`/api/submissions?${query.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch');
-
-      const { data } = await response.json();
-      setSubmissions(data || []);
-    } catch (error) {
-      toast.error('Failed to fetch submissions');
+      // Sort newest first
+      all.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      setResponses(all);
+    } catch {
+      toast.error('Failed to load responses');
     } finally {
       setIsLoading(false);
     }
@@ -52,47 +50,56 @@ export default function AdminDashboard() {
     router.push('/admin/login');
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this submission?')) return;
-
-    try {
-      const response = await fetch(`/api/submissions/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to delete');
-
-      setSubmissions(submissions.filter((s) => s.id !== id));
-      toast.success('Submission deleted');
-    } catch (error) {
-      toast.error('Failed to delete submission');
-    }
+  const handleDelete = (id: string) => {
+    if (!confirm('Are you sure you want to delete this response?')) return;
+    deleteResponse(id);
+    setResponses(responses.filter(r => r.id !== id));
+    toast.success('Response deleted');
   };
 
-  const handleExport = async (format: 'csv' | 'json') => {
+  const handleExport = (format: 'csv' | 'json') => {
     try {
-      const response = await fetch(`/api/submissions/export?format=${format}`);
-      if (!response.ok) throw new Error('Export failed');
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = response.headers.get('content-disposition')?.split('filename=')[1] || `export.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
+      const data = getResponses();
+      if (format === 'json') {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        downloadBlob(blob, `responses-${Date.now()}.json`);
+      } else {
+        const headers = ['ID', 'Questionnaire', 'Respondent', 'Email', 'Status', 'Submitted'];
+        const rows = data.map(r => [
+          r.id,
+          r.questionnaireTitle,
+          r.respondentName,
+          r.respondentEmail,
+          r.status,
+          r.submittedAt || r.updatedAt,
+        ]);
+        const csv = [headers, ...rows].map(row => row.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        downloadBlob(blob, `responses-${Date.now()}.csv`);
+      }
       toast.success(`Exported as ${format.toUpperCase()}`);
-    } catch (error) {
+    } catch {
       toast.error('Export failed');
     }
   };
 
-  const filteredSubmissions = submissions.filter((sub) =>
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
+  const filteredResponses = responses.filter(r =>
     searchTerm === ''
       ? true
-      : sub.property_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.owner_names.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        sub.email.toLowerCase().includes(searchTerm.toLowerCase())
+      : (r.respondentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.respondentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.questionnaireTitle || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (authLoading) {
@@ -135,20 +142,20 @@ export default function AdminDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{submissions.length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Total Submissions</p>
+            <p className="text-3xl font-bold text-c21-gold">{responses.length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Total Responses</p>
           </div>
           <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{submissions.filter((s) => s.status === 'pending').length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Pending Review</p>
+            <p className="text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'in-progress').length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">In Progress</p>
           </div>
           <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{submissions.filter((s) => s.status === 'approved').length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Approved</p>
+            <p className="text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'submitted').length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Submitted</p>
           </div>
           <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{submissions.filter((s) => s.status === 'rejected').length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Rejected</p>
+            <p className="text-3xl font-bold text-c21-gold">{getTemplates().length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Questionnaires</p>
           </div>
         </div>
 
@@ -159,7 +166,7 @@ export default function AdminDashboard() {
               <label className="block text-sm font-semibold mb-2 dark:text-gray-200">Search</label>
               <input
                 type="text"
-                placeholder="Search by property, owner, or email..."
+                placeholder="Search by name, email, or questionnaire..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="form-input"
@@ -172,10 +179,9 @@ export default function AdminDashboard() {
                 onChange={(e) => setFilter(e.target.value)}
                 className="form-input"
               >
-                <option value="all">All Submissions</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
+                <option value="all">All Responses</option>
+                <option value="in-progress">In Progress</option>
+                <option value="submitted">Submitted</option>
               </select>
             </div>
             <div className="flex items-end gap-2">
@@ -202,18 +208,17 @@ export default function AdminDashboard() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-c21-gold mx-auto mb-4"></div>
               <p className="text-gray-600">Loading submissions...</p>
             </div>
-          ) : filteredSubmissions.length === 0 ? (
+          ) : filteredResponses.length === 0 ? (
             <div className="p-8 text-center text-gray-600">
-              <p>No submissions found</p>
+              <p>No responses found</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">ID</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Property</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Owner</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Questionnaire</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold">Respondent</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Date</th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
@@ -221,37 +226,34 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-c21-gray">
-                  {filteredSubmissions.map((submission) => (
-                    <tr key={submission.id} className="hover:bg-c21-light-gray transition">
-                      <td className="px-6 py-3 text-sm font-mono text-c21-gold">{submission.id?.slice(0, 10)}...</td>
-                      <td className="px-6 py-3 text-sm">{submission.property_address.slice(0, 30)}...</td>
-                      <td className="px-6 py-3 text-sm">{submission.owner_names.slice(0, 20)}</td>
-                      <td className="px-6 py-3 text-sm">{submission.email}</td>
+                  {filteredResponses.map((response) => (
+                    <tr key={response.id} className="hover:bg-c21-light-gray dark:hover:bg-gray-700/50 transition">
+                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.questionnaireTitle}</td>
+                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentName || '—'}</td>
+                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentEmail || '—'}</td>
                       <td className="px-6 py-3 text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(submission.created_at || '').toLocaleDateString('en-AU')}
+                        {new Date(response.submittedAt || response.updatedAt).toLocaleDateString('en-AU')}
                       </td>
                       <td className="px-6 py-3 text-sm">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            submission.status === 'approved'
-                              ? 'bg-green-100 text-green-800'
-                              : submission.status === 'rejected'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
+                            response.status === 'submitted'
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                           }`}
                         >
-                          {submission.status || 'pending'}
+                          {response.status}
                         </span>
                       </td>
                       <td className="px-6 py-3 text-sm text-center">
                         <Link
-                          href={`/admin/submissions/${submission.id}`}
+                          href={`/admin/questionnaires/${response.questionnaireId}/responses`}
                           className="text-c21-gold hover:opacity-80 mr-3"
                         >
                           View
                         </Link>
                         <button
-                          onClick={() => handleDelete(submission.id!)}
+                          onClick={() => handleDelete(response.id)}
                           className="text-red-600 hover:opacity-80"
                         >
                           Delete
