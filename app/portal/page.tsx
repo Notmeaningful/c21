@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { QuestionnaireTemplate } from '@/lib/types/questionnaire';
-import { getPublishedTemplates, seedOfficeQuestionnaire } from '@/lib/store/questionnaire-store';
+import { getPublishedTemplates, seedOfficeQuestionnaire, seedDemoResponsesOnce } from '@/lib/store/questionnaire-store';
 
 export default function PortalHomePage() {
   const [templates, setTemplates] = useState<QuestionnaireTemplate[]>([]);
@@ -11,6 +11,7 @@ export default function PortalHomePage() {
 
   useEffect(() => {
     seedOfficeQuestionnaire();
+    seedDemoResponsesOnce();
     setTemplates(getPublishedTemplates());
     setLoading(false);
   }, []);
