@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+  <text x="300" y="160" font-family="'Century Gothic', 'Futura', 'Avenir', 'Poppins', sans-serif" font-size="110" font-weight="700" fill="currentColor" text-anchor="middle" letter-spacing="0.08em" opacity="1">CENTURY 21</text>
+  <text x="300" y="240" font-family="'Century Gothic', 'Futura', 'Avenir', 'Poppins', sans-serif" font-size="48" font-weight="300" fill="currentColor" text-anchor="middle" letter-spacing="0.5em" opacity="0.7">VASCO GROUP</text>
+  <line x1="150" y1="268" x2="450" y2="268" stroke="currentColor" stroke-width="0.75" opacity="0.25"/>
+</svg>
