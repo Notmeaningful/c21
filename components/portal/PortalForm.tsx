@@ -131,227 +131,212 @@ export default function PortalForm({ template, existingResponse, portalToken, re
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4 sm:px-6">
-        <div className="max-w-lg w-full text-center animate-fadeInUp">
-          <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 sm:p-12">
-            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-serif font-bold text-gray-900 mb-3">Submission Complete</h1>
-            <p className="text-gray-500 mb-8">{template.settings.confirmationMessage}</p>
-            <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-500 border border-gray-100">
-              <p>Reference: <span className="text-gray-700 font-mono font-medium">{responseId.slice(0, 12)}</span></p>
-              <p className="mt-1">Submitted: {new Date().toLocaleDateString('en-AU')}</p>
-            </div>
-            <a href="/portal" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-c21-gold transition-colors mt-6">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/></svg>
-              Back to Portal
-            </a>
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg className="w-7 h-7 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
           </div>
+          <h1 className="text-2xl font-serif font-bold text-gray-900 mb-2">All done!</h1>
+          <p className="text-gray-500 text-sm mb-6">{template.settings.confirmationMessage}</p>
+          <p className="text-xs text-gray-400">Reference: <span className="font-mono">{responseId.slice(0, 12)}</span></p>
+          <a href="/portal" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-c21-gold transition-colors mt-8">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/></svg>
+            Back to Portal
+          </a>
         </div>
       </div>
     );
   }
 
   const progress = ((currentStep + 1) / template.sections.length) * 100;
+  const visibleQuestions = section.questions.filter(q => isQuestionVisible(q));
 
   return (
     <div className="min-h-screen bg-[#faf8f5]">
-      {/* Top accent bar */}
-      <div className="h-2 bg-c21-gold" />
-
-      {/* Header card */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-          {/* Gold accent top */}
-          <div className="h-2 bg-gradient-to-r from-c21-gold via-amber-400 to-c21-gold" />
-          <div className="p-5 sm:p-8">
-            <div className="flex items-center gap-3 mb-4">
-              <a href="/">
-                <img src="/c21-logo.svg" alt="Century 21 Vasco Group" className="h-10" />
-              </a>
-            </div>
-            <a href="/portal" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-c21-gold transition-colors mb-3">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/></svg>
-              Back to Portal
-            </a>
-            <h1 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 mb-1">{template.title}</h1>
-            {template.description && (
-              <p className="text-sm text-gray-500 mb-4">{template.description}</p>
-            )}
-            {/* Progress */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-c21-gold rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
-              </div>
-              <span className="text-xs font-medium text-gray-400 whitespace-nowrap">
-                {currentStep + 1} / {template.sections.length}
-              </span>
+      {/* Sticky top bar */}
+      <div className="sticky top-0 z-20 bg-[#faf8f5]/90 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+          <a href="/portal" className="text-gray-400 hover:text-gray-600 transition-colors shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/></svg>
+          </a>
+          <div className="flex-1">
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-c21-gold rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              />
             </div>
           </div>
+          <span className="text-xs text-gray-400 shrink-0">{currentStep + 1}/{template.sections.length}</span>
         </div>
       </div>
 
-      {/* Section title card */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-3">
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 sm:p-6 border-t-4 border-t-c21-gold">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{section.title}</h2>
-          {section.description && <p className="text-sm text-gray-500 mt-1">{section.description}</p>}
-          <p className="text-xs text-red-400 mt-3">* Required</p>
+      {/* Content */}
+      <div className="max-w-xl mx-auto px-4 sm:px-6 py-10">
+        {/* Section heading */}
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-widest text-c21-gold mb-2">
+            Step {currentStep + 1} of {template.sections.length}
+          </p>
+          <h1 className="text-2xl font-serif font-bold text-gray-900">{section.title}</h1>
+          {section.description && (
+            <p className="text-sm text-gray-500 mt-1.5">{section.description}</p>
+          )}
         </div>
-      </div>
 
-      {/* Questions — each in its own card like Google Forms */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-3 space-y-3 pb-6">
-        {section.questions.filter(q => isQuestionVisible(q)).map((q, visibleIdx) => {
-          const value = answers[q.id];
-          const error = errors[q.id];
+        {/* Questions */}
+        <div className="space-y-7">
+          {visibleQuestions.map((q) => {
+            const value = answers[q.id];
+            const error = errors[q.id];
 
-          return (
-            <div
-              key={q.id}
-              className={`bg-white border rounded-2xl shadow-sm p-5 sm:p-6 transition-all duration-200 ${
-                error ? 'border-red-300 bg-red-50/30' : 'border-gray-100'
-              }`}
-            >
-              <label className="block text-sm sm:text-[15px] font-medium text-gray-800 mb-1">
-                {q.label}
-                {q.required && <span className="text-red-400 ml-1">*</span>}
-              </label>
-              {q.helpText && (
-                <p className="text-xs text-gray-400 mb-3">{q.helpText}</p>
-              )}
-
-              {q.type === 'text' || q.type === 'email' || q.type === 'phone' || q.type === 'number' ? (
-                <input
-                  type={q.type === 'phone' ? 'tel' : q.type}
-                  value={value || ''}
-                  onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                  placeholder={q.placeholder || 'Your answer'}
-                  className={`w-full border-0 border-b-2 bg-transparent px-0 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-300 focus:outline-none focus:border-c21-gold transition-colors ${
-                    error ? 'border-red-300' : 'border-gray-200'
-                  }`}
-                />
-              ) : q.type === 'textarea' ? (
-                <textarea
-                  value={value || ''}
-                  onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                  placeholder={q.placeholder || 'Your answer'}
-                  rows={3}
-                  className={`w-full border-0 border-b-2 bg-transparent px-0 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-300 focus:outline-none focus:border-c21-gold resize-none transition-colors ${
-                    error ? 'border-red-300' : 'border-gray-200'
-                  }`}
-                />
-              ) : q.type === 'date' ? (
-                <input
-                  type="date"
-                  value={value || ''}
-                  onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                  className={`w-full border-0 border-b-2 bg-transparent px-0 py-2 text-sm sm:text-base text-gray-900 focus:outline-none focus:border-c21-gold transition-colors ${
-                    error ? 'border-red-300' : 'border-gray-200'
-                  }`}
-                />
-              ) : q.type === 'radio' ? (
-                <div className="space-y-1 mt-2">
-                  {(q.options || []).map(opt => (
-                    <label
-                      key={opt.value}
-                      onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt.value }))}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 -mx-1 ${
-                        value === opt.value
-                          ? 'bg-c21-gold/[0.08]'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className={`w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                        value === opt.value ? 'border-c21-gold' : 'border-gray-300'
-                      }`}>
-                        {value === opt.value && <div className="w-[10px] h-[10px] rounded-full bg-c21-gold" />}
-                      </div>
-                      <span className="text-sm text-gray-700">{opt.label}</span>
-                    </label>
-                  ))}
-                </div>
-              ) : q.type === 'select' ? (
-                <select
-                  value={value || ''}
-                  onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                  className={`w-full border-0 border-b-2 bg-transparent px-0 py-2 text-sm sm:text-base text-gray-900 focus:outline-none focus:border-c21-gold transition-colors ${
-                    error ? 'border-red-300' : 'border-gray-200'
-                  }`}
-                >
-                  <option value="">Select...</option>
-                  {(q.options || []).map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              ) : q.type === 'checkbox' ? (
-                <label
-                  onClick={() => setAnswers(prev => ({ ...prev, [q.id]: !prev[q.id] }))}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 mt-1 -mx-1 ${
-                    value ? 'bg-c21-gold/[0.08]' : 'hover:bg-gray-50'
-                  }`}
-                >
-                  <div className={`w-[18px] h-[18px] rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
-                    value ? 'border-c21-gold bg-c21-gold' : 'border-gray-300'
-                  }`}>
-                    {value && (
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className="text-sm text-gray-700">I acknowledge and accept</span>
+            return (
+              <div key={q.id}>
+                <label className="block text-sm font-medium text-gray-800 mb-1.5">
+                  {q.label}
+                  {q.required && <span className="text-red-400 ml-1">*</span>}
                 </label>
-              ) : null}
+                {q.helpText && (
+                  <p className="text-xs text-gray-400 mb-2">{q.helpText}</p>
+                )}
 
-              {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
-            </div>
-          );
-        })}
+                {(q.type === 'text' || q.type === 'email' || q.type === 'phone' || q.type === 'number') && (
+                  <input
+                    type={q.type === 'phone' ? 'tel' : q.type}
+                    value={value || ''}
+                    onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                    placeholder={q.placeholder || ''}
+                    className={`w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-300 outline-none focus:ring-2 transition-all ${
+                      error ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-c21-gold focus:ring-c21-gold/10'
+                    }`}
+                  />
+                )}
 
-        {/* Navigation buttons */}
-        <div className="flex items-center justify-between pt-4 pb-8">
+                {q.type === 'textarea' && (
+                  <textarea
+                    value={value || ''}
+                    onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                    placeholder={q.placeholder || ''}
+                    rows={4}
+                    className={`w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-300 outline-none focus:ring-2 resize-none transition-all ${
+                      error ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-c21-gold focus:ring-c21-gold/10'
+                    }`}
+                  />
+                )}
+
+                {q.type === 'date' && (
+                  <input
+                    type="date"
+                    value={value || ''}
+                    onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                    className={`w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 transition-all ${
+                      error ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-c21-gold focus:ring-c21-gold/10'
+                    }`}
+                  />
+                )}
+
+                {q.type === 'select' && (
+                  <select
+                    value={value || ''}
+                    onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                    className={`w-full bg-white border rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 transition-all ${
+                      error ? 'border-red-300 focus:ring-red-100' : 'border-gray-200 focus:border-c21-gold focus:ring-c21-gold/10'
+                    }`}
+                  >
+                    <option value="">Select an option</option>
+                    {(q.options || []).map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                )}
+
+                {q.type === 'radio' && (
+                  <div className="space-y-2">
+                    {(q.options || []).map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt.value }))}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-sm text-left transition-all ${
+                          value === opt.value
+                            ? 'border-c21-gold bg-c21-gold/5 text-gray-900'
+                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                          value === opt.value ? 'border-c21-gold' : 'border-gray-300'
+                        }`}>
+                          {value === opt.value && <div className="w-2 h-2 rounded-full bg-c21-gold" />}
+                        </div>
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {q.type === 'checkbox' && (
+                  <button
+                    type="button"
+                    onClick={() => setAnswers(prev => ({ ...prev, [q.id]: !prev[q.id] }))}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm text-left transition-all ${
+                      value ? 'border-c21-gold bg-c21-gold/5 text-gray-900' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                      value ? 'border-c21-gold bg-c21-gold' : 'border-gray-300'
+                    }`}>
+                      {value && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    I acknowledge and accept
+                  </button>
+                )}
+
+                {error && <p className="text-xs text-red-500 mt-1.5">{error}</p>}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex items-center justify-between mt-10 pt-6 border-t border-gray-100">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className="px-5 py-2.5 text-sm font-semibold text-c21-gold hover:bg-c21-gold/[0.06] rounded-lg disabled:opacity-0 disabled:pointer-events-none transition-all"
+            className="text-sm font-medium text-gray-400 hover:text-gray-700 disabled:opacity-0 disabled:pointer-events-none transition-colors"
           >
-            Back
+            ← Back
           </button>
 
-          <div className="flex items-center gap-3">
-            {currentStep === template.sections.length - 1 ? (
-              <button
-                onClick={handleSubmit}
-                disabled={saving}
-                className="btn-primary text-sm flex items-center gap-2"
-              >
-                {saving ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                    Submitting...
-                  </>
-                ) : 'Submit'}
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="btn-primary text-sm"
-              >
-                Next
-              </button>
-            )}
-          </div>
+          {currentStep === template.sections.length - 1 ? (
+            <button
+              onClick={handleSubmit}
+              disabled={saving}
+              className="btn-primary text-sm px-8 flex items-center gap-2"
+            >
+              {saving ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                  </svg>
+                  Submitting...
+                </>
+              ) : 'Submit'}
+            </button>
+          ) : (
+            <button onClick={handleNext} className="btn-primary text-sm px-8">
+              Continue →
+            </button>
+          )}
         </div>
 
-        {/* Auto-save notice */}
-        <p className="text-center text-xs text-gray-400 pb-6 flex items-center justify-center gap-1.5">
-          <svg className="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
-          Progress saved automatically
-        </p>
+        <p className="text-center text-xs text-gray-300 mt-6">Progress saved automatically</p>
       </div>
     </div>
   );
