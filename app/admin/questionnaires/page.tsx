@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { QuestionnaireTemplate } from '@/lib/types/questionnaire';
-import { getTemplates, deleteTemplate, seedOfficeQuestionnaire, getResponses } from '@/lib/store/questionnaire-store';
+import { getTemplates, deleteTemplate, seedOfficeQuestionnaire, seedDemoResponsesOnce, getResponses } from '@/lib/store/questionnaire-store';
 
 export default function QuestionnairesListPage() {
   const [templates, setTemplates] = useState<QuestionnaireTemplate[]>([]);
@@ -13,6 +13,7 @@ export default function QuestionnairesListPage() {
 
   useEffect(() => {
     seedOfficeQuestionnaire();
+    seedDemoResponsesOnce();
     const all = getTemplates();
     setTemplates(all);
     const counts: Record<string, number> = {};

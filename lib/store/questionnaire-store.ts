@@ -170,19 +170,45 @@ const DEMO_SEEDED_KEY = 'c21_demo_seeded';
 export function seedDemoResponsesOnce(): void {
   if (typeof window === 'undefined') return;
   if (localStorage.getItem(DEMO_SEEDED_KEY)) return;
+
+  // Seed demo questionnaire templates first
+  const demoTemplates = [
+    { slug: 'tenant-application', title: 'Tenant Application Form', status: 'published' as const, description: 'Standard tenant application for prospective renters.' },
+    { slug: 'property-inspection', title: 'Property Inspection Report', status: 'published' as const, description: 'Pre and post tenancy property condition report.' },
+    { slug: 'maintenance-request', title: 'Maintenance Request', status: 'published' as const, description: 'Log and track maintenance issues for managed properties.' },
+    { slug: 'lease-renewal', title: 'Lease Renewal Agreement', status: 'draft' as const, description: 'Renewal terms and conditions for existing tenants.' },
+  ];
+
+  const templateIds: string[] = [];
+  const titleMap: Record<string, string> = {};
+  for (const t of demoTemplates) {
+    const existing = getTemplates().find(x => x.slug === t.slug);
+    if (existing) {
+      templateIds.push(existing.id);
+      titleMap[existing.id] = existing.title;
+    } else {
+      const saved = saveTemplate({ ...t, sections: [], branding: { primaryColor: '#b5985a', companyName: 'Century 21 Vasco Group' }, settings: { allowSave: true, requireSignature: false, confirmationMessage: 'Thank you for your submission.' } });
+      templateIds.push(saved.id);
+      titleMap[saved.id] = saved.title;
+    }
+  }
+
   const existing = getResponses();
   if (existing.length > 0) {
     localStorage.setItem(DEMO_SEEDED_KEY, '1');
     return;
   }
-  const demoQId = 'demo-property-q1';
+
+  // Use the seeded template IDs for responses
+  const qId = (i: number) => templateIds[i % templateIds.length];
+  const qTitle = (i: number) => titleMap[qId(i)];
   const now = Date.now();
   const day = 86400000;
   const demos: QuestionnaireResponse[] = [
     {
       id: 'demo-resp-1',
-      questionnaireId: demoQId,
-      questionnaireTitle: 'Property Questionnaire',
+      questionnaireId: qId(0),
+      questionnaireTitle: qTitle(0),
       respondentName: 'Sarah Johnson',
       respondentEmail: 'sarah.johnson@gmail.com',
       answers: {},
@@ -194,8 +220,8 @@ export function seedDemoResponsesOnce(): void {
     },
     {
       id: 'demo-resp-2',
-      questionnaireId: demoQId,
-      questionnaireTitle: 'Property Questionnaire',
+      questionnaireId: qId(1),
+      questionnaireTitle: qTitle(1),
       respondentName: 'Michael Chen',
       respondentEmail: 'mchen@outlook.com',
       answers: {},
@@ -207,8 +233,8 @@ export function seedDemoResponsesOnce(): void {
     },
     {
       id: 'demo-resp-3',
-      questionnaireId: demoQId,
-      questionnaireTitle: 'Property Questionnaire',
+      questionnaireId: qId(2),
+      questionnaireTitle: qTitle(2),
       respondentName: 'Emma Williams',
       respondentEmail: 'emma.w@icloud.com',
       answers: {},
@@ -220,8 +246,8 @@ export function seedDemoResponsesOnce(): void {
     },
     {
       id: 'demo-resp-4',
-      questionnaireId: demoQId,
-      questionnaireTitle: 'Property Questionnaire',
+      questionnaireId: qId(0),
+      questionnaireTitle: qTitle(0),
       respondentName: 'David Thompson',
       respondentEmail: 'd.thompson@gmail.com',
       answers: {},
@@ -233,8 +259,8 @@ export function seedDemoResponsesOnce(): void {
     },
     {
       id: 'demo-resp-5',
-      questionnaireId: demoQId,
-      questionnaireTitle: 'Property Questionnaire',
+      questionnaireId: qId(1),
+      questionnaireTitle: qTitle(1),
       respondentName: 'Jessica Brown',
       respondentEmail: 'jessica.brown@hotmail.com',
       answers: {},
