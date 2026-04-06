@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUsers, hashPassword } from '@/lib/store/user-store';
 
-const users = getUsers();
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const users = getUsers();
   const userList = Object.entries(users).map(([username, data]) => ({
     username,
     role: data.role,
@@ -14,6 +15,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const users = getUsers();
     const { username, password, role } = await request.json();
 
     if (!username || !password) {
@@ -44,6 +46,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const users = getUsers();
     const { username } = await request.json();
 
     if (!username) {
@@ -71,6 +74,7 @@ export async function DELETE(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const users = getUsers();
     const { username, password, role } = await request.json();
 
     if (!username) {
