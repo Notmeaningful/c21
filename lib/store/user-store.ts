@@ -1,19 +1,22 @@
 import bcrypt from 'bcryptjs';
 
-// Password is controlled exclusively by the ADMIN_PASSWORD environment variable.
-// Set it in .env.local (local) and in Netlify environment variables (production).
-if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_PASSWORD) {
-  throw new Error('[SECURITY] ADMIN_PASSWORD environment variable must be set in production.');
+function getAdminHash(): string {
+  const pwd = process.env.ADMIN_PASSWORD;
+  if (process.env.NODE_ENV === 'production' && !pwd) {
+    throw new Error('[SECURITY] ADMIN_PASSWORD environment variable must be set in production.');
+  }
+  return bcrypt.hashSync(pwd || 'dev-local-only', 10);
 }
 
-const adminHash = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'dev-local-only', 10);
-
-const users: Record<string, { password: string; role: string; createdAt: string; email?: string }> = {
-  ahmad: { password: adminHash, role: 'admin', createdAt: new Date().toISOString(), email: process.env.ADMIN_EMAIL },
-};
+let _users: Record<string, { password: string; role: string; createdAt: string; email?: string }> | null = null;
 
 export function getUsers() {
-  return users;
+  if (!_users) {
+    _users = {
+      ahmad: { password: getAdminHash(), role: 'admin', createdAt: new Date().toISOString(), email: process.env.ADMIN_EMAIL },
+    };
+  }
+  return _users;
 }
 
 export function verifyPassword(plainText: string, hash: string): boolean {
