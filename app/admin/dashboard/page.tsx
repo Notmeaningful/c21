@@ -28,11 +28,26 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, filter]);
 
-  const loadResponses = () => {
+  const loadResponses = async () => {
     setIsLoading(true);
     try {
       seedDemoResponsesOnce();
-      let all = getResponses();
+
+      // Fetch server-side responses (real submissions from any device)
+      let serverResponses: QuestionnaireResponse[] = [];
+      try {
+        const res = await fetch('/api/responses');
+        if (res.ok) {
+          serverResponses = await res.json();
+        }
+      } catch {}
+
+      // Merge server + localStorage, server takes priority (dedup by id)
+      const merged = new Map<string, QuestionnaireResponse>();
+      getResponses().forEach(r => merged.set(r.id, r));
+      serverResponses.forEach(r => merged.set(r.id, r));
+
+      let all = Array.from(merged.values());
       if (filter !== 'all') {
         all = all.filter(r => r.status === filter);
       }

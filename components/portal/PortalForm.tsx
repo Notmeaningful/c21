@@ -113,6 +113,13 @@ export default function PortalForm({ template, existingResponse, portalToken, re
         markPortalLinkUsed(portalToken, response.id);
       }
 
+      // Save to server so admin can see it from any device (fire and forget)
+      fetch('/api/responses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(response),
+      }).catch(() => {});
+
       // Send email notifications (fire and forget)
       fetch('/api/notifications/submit', {
         method: 'POST',

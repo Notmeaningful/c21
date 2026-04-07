@@ -109,10 +109,24 @@ export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
 
   useEffect(() => {
-    seedOfficeQuestionnaire();
-    const templates = getTemplates();
-    const allResponses = getResponses();
-    setAnalytics(computeAnalytics(templates, allResponses));
+    async function load() {
+      seedOfficeQuestionnaire();
+      const templates = getTemplates();
+
+      // Fetch real server-side responses, merge with localStorage
+      let serverResponses: QuestionnaireResponse[] = [];
+      try {
+        const res = await fetch('/api/responses');
+        if (res.ok) serverResponses = await res.json();
+      } catch {}
+
+      const merged = new Map<string, QuestionnaireResponse>();
+      getResponses().forEach(r => merged.set(r.id, r));
+      serverResponses.forEach(r => merged.set(r.id, r));
+
+      setAnalytics(computeAnalytics(templates, Array.from(merged.values())));
+    }
+    load();
   }, []);
 
   if (!analytics) {
