@@ -10,7 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { isAuthenticated, adminUsername, logout, isLoading: authLoading } = useAdminAuth();
+  const { isAuthenticated, adminUsername, isLoading: authLoading } = useAdminAuth();
   const [responses, setResponses] = useState<QuestionnaireResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -59,11 +59,6 @@ export default function AdminDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.push('/admin/login');
   };
 
   const handleDelete = (id: string) => {
@@ -136,22 +131,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-c21-light-gray dark:bg-gray-900">
       <Toaster position="top-right" />
-
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-100 dark:border-gray-700 rounded-t-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Admin Dashboard</h1>
-            <p className="text-gray-400 text-sm mt-0.5">{adminUsername}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-c21-gold text-c21-black font-semibold rounded text-sm hover:opacity-90 transition"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
