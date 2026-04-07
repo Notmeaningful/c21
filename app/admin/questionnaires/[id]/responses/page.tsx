@@ -165,24 +165,24 @@ export default function ResponsesPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <p className="text-caption text-c21-gold mb-1">Responses</p>
           <h1 className="text-heading-md">{template.title}</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{responses.length} response(s)</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={exportCSV}
             disabled={responses.length === 0}
-            className="px-4 py-2 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl hover:bg-emerald-100 disabled:opacity-30 transition-all"
+            className="px-3 py-2 text-sm bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-xl hover:bg-emerald-100 disabled:opacity-30 transition-all"
           >
-            Export All CSV
+            Export CSV
           </button>
           <Link
             href="/admin/questionnaires"
-            className="px-4 py-2 text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1.5"
+            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1.5"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/></svg>
             Back
@@ -279,7 +279,7 @@ export default function ResponsesPage() {
           <div className="lg:col-span-2">
             {selectedResponse ? (
               <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm p-6">
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{selectedResponse.respondentName || 'Anonymous'}</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{selectedResponse.respondentEmail}</p>
@@ -287,13 +287,13 @@ export default function ResponsesPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => downloadPDF(selectedResponse)}
-                      className="px-3 py-1.5 text-sm bg-c21-gold/[0.08] text-c21-gold border border-c21-gold/20 rounded-lg hover:bg-c21-gold/[0.15] transition-colors"
+                      className="px-3 py-1.5 text-xs sm:text-sm bg-c21-gold/[0.08] text-c21-gold border border-c21-gold/20 rounded-lg hover:bg-c21-gold/[0.15] transition-colors"
                     >
-                      Download PDF
+                      PDF
                     </button>
                     <button
                       onClick={() => handleDelete(selectedResponse.id)}
-                      className="px-3 py-1.5 text-sm bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                      className="px-3 py-1.5 text-xs sm:text-sm bg-red-50 text-red-500 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
                     >
                       Delete
                     </button>

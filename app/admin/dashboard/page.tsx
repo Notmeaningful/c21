@@ -139,14 +139,14 @@ export default function AdminDashboard() {
 
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-100 dark:border-gray-700 rounded-t-2xl">
-        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-            <p className="text-gray-400 text-sm mt-1">{adminUsername}</p>
+            <h1 className="text-xl sm:text-2xl font-bold">Admin Dashboard</h1>
+            <p className="text-gray-400 text-sm mt-0.5">{adminUsername}</p>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-c21-gold text-c21-black font-semibold rounded hover:opacity-90 transition"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-c21-gold text-c21-black font-semibold rounded text-sm hover:opacity-90 transition"
           >
             Logout
           </button>
@@ -154,30 +154,30 @@ export default function AdminDashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{responses.length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Total Responses</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="card dark:bg-gray-800 dark:border-gray-700 p-4 sm:p-6 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-c21-gold">{responses.length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">Total Responses</p>
           </div>
-          <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'in-progress').length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">In Progress</p>
+          <div className="card dark:bg-gray-800 dark:border-gray-700 p-4 sm:p-6 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'in-progress').length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">In Progress</p>
           </div>
-          <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'submitted').length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Submitted</p>
+          <div className="card dark:bg-gray-800 dark:border-gray-700 p-4 sm:p-6 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-c21-gold">{responses.filter((r) => r.status === 'submitted').length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">Submitted</p>
           </div>
-          <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 text-center">
-            <p className="text-3xl font-bold text-c21-gold">{getTemplates().length}</p>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Questionnaires</p>
+          <div className="card dark:bg-gray-800 dark:border-gray-700 p-4 sm:p-6 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-c21-gold">{getTemplates().length}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mt-1">Questionnaires</p>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="card dark:bg-gray-800 dark:border-gray-700 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="card dark:bg-gray-800 dark:border-gray-700 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
               <label className="block text-sm font-semibold mb-2 dark:text-gray-200">Search</label>
               <input
@@ -217,11 +217,11 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Submissions Table */}
+        {/* Submissions — table on desktop, cards on mobile */}
         <div className="card dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
           {isLoading ? (
             <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-c21-gold mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-c21-gold mx-auto mb-4"></div>
               <p className="text-gray-600">Loading submissions...</p>
             </div>
           ) : filteredResponses.length === 0 ? (
@@ -229,57 +229,85 @@ export default function AdminDashboard() {
               <p>No responses found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Questionnaire</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Respondent</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Date</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
-                    <th className="px-6 py-3 text-center text-sm font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-c21-gray">
-                  {filteredResponses.map((response) => (
-                    <tr key={response.id} className="hover:bg-c21-light-gray dark:hover:bg-gray-700/50 transition">
-                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.questionnaireTitle}</td>
-                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentName || '—'}</td>
-                      <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentEmail || '—'}</td>
-                      <td className="px-6 py-3 text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(response.submittedAt || response.updatedAt).toLocaleDateString('en-AU')}
-                      </td>
-                      <td className="px-6 py-3 text-sm">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+            <>
+              {/* Desktop table */}
+              <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-sm font-semibold">Questionnaire</th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold">Respondent</th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold">Date</th>
+                      <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
+                      <th className="px-6 py-3 text-center text-sm font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-c21-gray">
+                    {filteredResponses.map((response) => (
+                      <tr key={response.id} className="hover:bg-c21-light-gray dark:hover:bg-gray-700/50 transition">
+                        <td className="px-6 py-3 text-sm dark:text-gray-200">{response.questionnaireTitle}</td>
+                        <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentName || '—'}</td>
+                        <td className="px-6 py-3 text-sm dark:text-gray-200">{response.respondentEmail || '—'}</td>
+                        <td className="px-6 py-3 text-sm text-gray-600 dark:text-gray-400">
+                          {new Date(response.submittedAt || response.updatedAt).toLocaleDateString('en-AU')}
+                        </td>
+                        <td className="px-6 py-3 text-sm">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             response.status === 'submitted'
                               ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                               : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                          }`}
-                        >
-                          {response.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-3 text-sm text-center">
-                        <Link
-                          href={`/admin/questionnaires/${response.questionnaireId}/responses`}
-                          className="text-c21-gold hover:opacity-80 mr-3"
-                        >
-                          View
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(response.id)}
-                          className="text-red-600 hover:opacity-80"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                          }`}>
+                            {response.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-3 text-sm text-center">
+                          <Link href={`/admin/questionnaires/${response.questionnaireId}/responses`} className="text-c21-gold hover:opacity-80 mr-3">
+                            View
+                          </Link>
+                          <button onClick={() => handleDelete(response.id)} className="text-red-600 hover:opacity-80">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile cards */}
+              <div className="sm:hidden divide-y divide-gray-100 dark:divide-gray-700">
+                {filteredResponses.map((response) => (
+                  <div key={response.id} className="p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{response.respondentName || '—'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{response.respondentEmail || '—'}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold shrink-0 ${
+                        response.status === 'submitted'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {response.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{response.questionnaireTitle}</p>
+                    <p className="text-xs text-gray-400 mb-3">
+                      {new Date(response.submittedAt || response.updatedAt).toLocaleDateString('en-AU')}
+                    </p>
+                    <div className="flex gap-3">
+                      <Link href={`/admin/questionnaires/${response.questionnaireId}/responses`} className="text-xs text-c21-gold font-medium">
+                        View
+                      </Link>
+                      <button onClick={() => handleDelete(response.id)} className="text-xs text-red-500 font-medium">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>

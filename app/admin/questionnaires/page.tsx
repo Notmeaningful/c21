@@ -57,22 +57,23 @@ export default function QuestionnairesListPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
-      <div className="flex items-end justify-between mb-10">
+      <div className="flex items-start justify-between gap-3 mb-6 sm:mb-10">
         <div>
-          <p className="text-caption text-c21-gold mb-2">Management</p>
+          <p className="text-caption text-c21-gold mb-1 sm:mb-2">Management</p>
           <h1 className="text-heading-md">Questionnaires</h1>
-          <p className="text-gray-500 mt-2">Create and manage questionnaires for your clients</p>
+          <p className="text-gray-500 text-sm mt-1">Create and manage questionnaires for your clients</p>
         </div>
         <Link
           href="/admin/questionnaires/new"
-          className="btn-primary flex items-center gap-2"
+          className="btn-primary flex items-center gap-2 shrink-0 text-sm"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          New Questionnaire
+          <span className="hidden sm:inline">New Questionnaire</span>
+          <span className="sm:hidden">New</span>
         </Link>
       </div>
 
@@ -130,7 +131,7 @@ export default function QuestionnairesListPage() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 ml-6 shrink-0">
+                <div className="flex items-center gap-1.5 ml-3 sm:ml-6 shrink-0 flex-wrap justify-end">
                   <Link
                     href={`/admin/questionnaires/${template.id}/edit`}
                     className="px-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-200 dark:border-gray-600 transition-all duration-200"
