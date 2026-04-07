@@ -4,37 +4,6 @@ import Link from 'next/link';
 import { BRANCH_NAME, BRANCH_ADDRESS, BRANCH_PHONE, BRANCH_FAX, BRANCH_EMAIL } from '@/lib/constants';
 import { useDarkMode } from '@/lib/contexts/DarkModeContext';
 
-const features = [
-  {
-    title: 'Secure & Private',
-    description: 'Enterprise-grade encryption protects your sensitive information at every step.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-    ),
-  },
-  {
-    title: 'Fast & Effortless',
-    description: 'Streamlined workflow built for efficiency. Save progress and resume anytime.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-    ),
-  },
-  {
-    title: 'Expert Support',
-    description: 'Dedicated team ready to guide you through every step of the process.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
-    ),
-  },
-  {
-    title: 'Mobile Optimised',
-    description: 'Responsive design works beautifully on phones, tablets, and desktops.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>
-    ),
-  },
-];
-
 export default function Home() {
   const { isDark, toggle } = useDarkMode();
 
@@ -80,31 +49,6 @@ export default function Home() {
             Go to Portal
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
           </Link>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-caption mb-3">Why Choose Us</p>
-            <h2 className="text-heading-md">Built for Excellence</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 sm:p-8 hover:shadow-md hover:border-c21-gold/20 transition-all duration-200 group"
-              >
-                <div className="w-11 h-11 rounded-xl bg-c21-gold/[0.08] flex items-center justify-center mb-4 text-c21-gold group-hover:bg-c21-gold/[0.12] transition-all">
-                  {feature.icon}
-                </div>
-                <h3 className="text-gray-900 dark:text-gray-100 font-semibold text-base mb-2">{feature.title}</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
