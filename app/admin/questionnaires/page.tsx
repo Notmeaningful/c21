@@ -98,7 +98,7 @@ export default function QuestionnairesListPage() {
               className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm p-6 hover:border-c21-gold/20 hover:shadow-md transition-all duration-200 group"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-c21-gold transition-colors truncate">{template.title}</h3>
@@ -131,7 +131,7 @@ export default function QuestionnairesListPage() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 ml-3 sm:ml-6 shrink-0 flex-wrap justify-end">
+                <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:justify-end">
                   <Link
                     href={`/admin/questionnaires/${template.id}/edit`}
                     className="px-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-200 dark:border-gray-600 transition-all duration-200"
