@@ -102,7 +102,7 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -111,15 +111,15 @@ export default function UsersPage() {
       />
 
       {/* Header */}
-      <div className="flex items-end justify-between mb-10">
+      <div className="flex items-start justify-between gap-3 mb-6 sm:mb-10">
         <div>
-          <p className="text-caption text-c21-gold mb-2">Access Control</p>
+          <p className="text-caption text-c21-gold mb-1 sm:mb-2">Access Control</p>
           <h1 className="text-heading-md">Users</h1>
-          <p className="text-gray-500 mt-2">Manage who can access the admin panel</p>
+          <p className="text-gray-500 text-sm mt-1 sm:mt-2">Manage who can access the admin panel</p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className={showAddForm ? 'btn-secondary' : 'btn-primary flex items-center gap-2'}
+          className={showAddForm ? 'btn-secondary shrink-0' : 'btn-primary flex items-center gap-2 shrink-0 text-sm'}
         >
           {showAddForm ? (
             'Cancel'
@@ -138,7 +138,7 @@ export default function UsersPage() {
       {showAddForm && (
         <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm p-6 mb-8 animate-fadeInUp">
           <h3 className="text-gray-900 dark:text-gray-100 font-semibold mb-5">New User</h3>
-          <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <form onSubmit={handleAddUser} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Username</label>
               <input
@@ -213,15 +213,15 @@ export default function UsersPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap justify-end">
                 {editingUser === user.username ? (
-                  <div className="flex items-center gap-2 animate-fadeInUp">
+                  <div className="flex items-center gap-2 animate-fadeInUp flex-wrap justify-end">
                     <input
                       type="text"
                       value={editPassword}
                       onChange={(e) => setEditPassword(e.target.value)}
                       placeholder="New password"
-                      className="form-input !py-2 !text-sm w-40"
+                      className="form-input !py-2 !text-sm w-32 sm:w-40"
                       autoFocus
                       onKeyDown={(e) => e.key === 'Enter' && handleUpdatePassword(user.username)}
                     />

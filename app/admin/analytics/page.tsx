@@ -138,13 +138,13 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <h1 className="text-heading-md">Analytics</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Overview of questionnaire activity</p>
         </div>
-        <Link href="/admin/questionnaires" className="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 text-sm transition-colors">
+        <Link href="/admin/questionnaires" className="px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 text-sm transition-colors whitespace-nowrap">
           ← Back
         </Link>
       </div>

@@ -26,8 +26,8 @@ export default function AuditLogPage() {
   const filtered = filter === 'all' ? logs : logs.filter(l => l.action === filter);
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8">
         <div>
           <h1 className="text-heading-md">Audit Log</h1>
           <p className="text-gray-500 text-sm mt-1">Track all admin activity</p>
@@ -55,25 +55,28 @@ export default function AuditLogPage() {
         <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
           <div className="divide-y divide-gray-50 dark:divide-gray-700">
             {filtered.map(entry => (
-                <div key={entry.id} className="px-6 py-4 flex items-start gap-4 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
+              <div key={entry.id} className="px-4 sm:px-6 py-4 flex items-start gap-3 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
                 <div className="flex-shrink-0 mt-0.5">
                   <span className={`inline-block px-2 py-0.5 text-[10px] uppercase tracking-wider font-medium rounded-md border ${ACTION_COLORS[entry.action] || 'text-gray-500 bg-gray-50 border-gray-200'}`}>
                     {entry.action.replace('_', ' ')}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span className="font-medium text-sm text-gray-900 dark:text-gray-100">{entry.user}</span>
                     <span className="text-xs text-gray-400 dark:text-gray-500">
                       {entry.action.replace('_', ' ')} {entry.resource}
-                      {entry.resourceId ? ` (${entry.resourceId.slice(0, 10)}...)` : ''}
+                      {entry.resourceId ? ` (${entry.resourceId.slice(0, 8)}...)` : ''}
                     </span>
                   </div>
                   {entry.details && (
                     <p className="text-xs text-gray-500 mt-0.5">{entry.details}</p>
                   )}
+                  <p className="text-xs text-gray-400 mt-1 sm:hidden">
+                    {new Date(entry.timestamp).toLocaleString('en-AU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
-                <div className="flex-shrink-0 text-xs text-gray-400">
+                <div className="hidden sm:block flex-shrink-0 text-xs text-gray-400">
                   {new Date(entry.timestamp).toLocaleString('en-AU', {
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit',
