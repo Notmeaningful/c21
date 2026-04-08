@@ -1,31 +1,102 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { BRANCH_NAME, BRANCH_ADDRESS, BRANCH_PHONE, BRANCH_FAX, BRANCH_EMAIL } from '@/lib/constants';
 import { useDarkMode } from '@/lib/contexts/DarkModeContext';
 
 export default function Home() {
   const { isDark, toggle } = useDarkMode();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#faf8f5] dark:bg-gray-900 transition-colors">
-      {/* Dark mode toggle — fixed bottom right */}
-      <button
-        onClick={toggle}
-        className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-105"
-        title={isDark ? 'Light mode' : 'Dark mode'}
-      >
-        {isDark ? (
-          <svg className="w-5 h-5 text-c21-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-          </svg>
-        ) : (
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-          </svg>
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-100 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-14">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5">
+              <img src="/c21-icon.svg" alt="Century 21" className="w-8 h-8" />
+              <span className="hidden sm:block text-gray-900 dark:text-gray-100 font-semibold text-sm tracking-wide">Century 21 Vasco Group</span>
+            </Link>
+
+            {/* Desktop right */}
+            <div className="hidden sm:flex items-center gap-2">
+              <button
+                onClick={toggle}
+                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                title={isDark ? 'Light mode' : 'Dark mode'}
+              >
+                {isDark ? (
+                  <svg className="w-4 h-4 text-c21-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                  </svg>
+                )}
+              </button>
+              <Link
+                href="/admin/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-c21-gold dark:hover:text-c21-gold border border-gray-200 dark:border-gray-600 rounded-xl hover:border-c21-gold/40 transition-all duration-200"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                </svg>
+                Admin Access
+              </Link>
+            </div>
+
+            {/* Mobile right */}
+            <div className="flex sm:hidden items-center gap-1">
+              <button
+                onClick={toggle}
+                className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                title={isDark ? 'Light mode' : 'Dark mode'}
+              >
+                {isDark ? (
+                  <svg className="w-4 h-4 text-c21-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => setMenuOpen(v => !v)}
+                className="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+              >
+                {menuOpen ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile dropdown */}
+        {menuOpen && (
+          <div className="sm:hidden border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3">
+            <Link
+              href="/admin/login"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-c21-gold transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+              Admin Access
+            </Link>
+          </div>
         )}
-      </button>
-      {/* Hero */}
+      </header>
+
       <section className="relative min-h-[85vh] sm:min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background watermark — moved up, more visible */}
         <div className="absolute inset-0 flex items-start justify-center pt-[6vh] sm:pt-[8vh] pointer-events-none select-none">
